@@ -3,6 +3,9 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEditor.Build;
 using System.Collections;
+using Unity.VisualScripting;
+using UnityEditor;
+using UnityEngine.SceneManagement;
 public class BattleSystemScript : MonoBehaviour
 {
     //Grab Starter Battle Text 
@@ -35,6 +38,8 @@ public class BattleSystemScript : MonoBehaviour
     //pull enemy stats from enemy scriptable object
     EnemyStatsScript enemyStatsScript;
 
+    [SerializeField] SceneAsset dungeon_scene;
+
     void Start()
     {
         enemyStatsScript = gameObject.GetComponent<EnemyStatsScript>();
@@ -61,6 +66,13 @@ public class BattleSystemScript : MonoBehaviour
             enemyHP[i].value = enemyStatsScript.enemy_hp[i];
             //set enemy damage to enemy attack stat
             enemy_damage[i] = enemyStatsScript.enemy_atk[i];
+        }
+    }
+    //set debug to get to dungeon scene 
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SceneManager.LoadScene(dungeon_scene.name);
         }
     }
     //set up battle system

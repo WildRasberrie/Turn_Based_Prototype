@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - MiniMap
+  - SceneLoader
   layers:
   - Default
   - TransparentFX
