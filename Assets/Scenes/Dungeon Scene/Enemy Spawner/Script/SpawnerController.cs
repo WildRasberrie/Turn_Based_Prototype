@@ -1,8 +1,6 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using UnityEditor;
-using UnityEngine.UI;
 using System.Collections;
 
 public class SpawnerController : MonoBehaviour
@@ -19,10 +17,13 @@ public class SpawnerController : MonoBehaviour
     public GameObject player;
     public SceneLoader SceneLoader;
     [Space]
-    public Mask mask;
     float random;
     bool spawn;
     Transform player_transform;
+  
+
+
+ 
     void Start()
     {
         player_transform = player.transform;
@@ -38,16 +39,17 @@ public class SpawnerController : MonoBehaviour
                 Destroy(current_players[i]);
             }
         }
+     
     }
 
     void Update()
     {
         
         for (int i = 0; i < enemy_loc.Length; i++) { 
-            if (DistanceDetection(player.transform.position, i)) {
+            if (DistanceDetection(player.transform.position, i,5)) {
 
             spawn = true;
-            print("Player is hitting enemy");
+            print("Player is hitting enemy spawner");
             StartCoroutine(SpawnEnemy());
             }
         }
@@ -63,22 +65,21 @@ public class SpawnerController : MonoBehaviour
     IEnumerator SpawnEnemy() {
         // have random number spawn once when called 
 
-        ratio = Random.Range(spawn_ratio, 100f);
+        ratio = Random.Range(0,spawn_ratio);
 
         random = ratio / 100f; //get the ratio of player encountering the enemy
         if (spawn)
         {
             if (random >= .9f)
             {
-
-                yield return new WaitForSeconds(2f);
+                //p]ay fade out animation 
+                yield return new WaitForSeconds(1f);
                 SceneLoader.LoadScene(scene_name.name);
             }
-            spawn = false;
+                spawn = false;
         }
     }
-    bool DistanceDetection(Vector3 target, int index) {
-        int distance = 5;
+    public bool DistanceDetection(Vector3 target, int index, int distance) {
         return (Vector3.Distance(enemy_loc[index].transform.position, target) < distance);
     }
 

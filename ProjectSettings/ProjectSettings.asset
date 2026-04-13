@@ -820,8 +820,10 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    Standalone: AMPLIFY_SHADER_EDITOR
-    WebGL: AMPLIFY_SHADER_EDITOR
+    Server: PROBUILDER_EXPERIMENTAL_FEATURES
+    Standalone: AMPLIFY_SHADER_EDITOR;PROBUILDER_EXPERIMENTAL_FEATURES
+    WebGL: AMPLIFY_SHADER_EDITOR;PROBUILDER_EXPERIMENTAL_FEATURES
+    Windows Store Apps: PROBUILDER_EXPERIMENTAL_FEATURES
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

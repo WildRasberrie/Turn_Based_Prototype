@@ -6,6 +6,10 @@ TagManager:
   tags:
   - MiniMap
   - SceneLoader
+  - Transition
+  - Enemy
+  - Chest
+  - Interactable
   layers:
   - Default
   - TransparentFX

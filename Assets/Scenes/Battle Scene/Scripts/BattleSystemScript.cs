@@ -1,9 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEditor.Build;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 public class BattleSystemScript : MonoBehaviour
@@ -18,14 +16,14 @@ public class BattleSystemScript : MonoBehaviour
 
     [Space]
     [Header("Player Stats")]
-    [SerializeField] Slider playerHP;
+    public Slider playerHP;
     [SerializeField] TextMeshProUGUI player_name;
     [SerializeField] TextMeshProUGUI player_lvl;
 
     [Space]
     [Header("Enemy Stats")]
     [SerializeField] int[] enemy_damage;
-    [SerializeField] Slider[] enemyHP;
+    public Slider[] enemyHP;
     [SerializeField] TextMeshProUGUI[] enemy_name;
     [SerializeField] TextMeshProUGUI[] enemy_lvl;
     [SerializeField] Image[] enemy_stat_background;
@@ -35,6 +33,10 @@ public class BattleSystemScript : MonoBehaviour
     [Space]
     [Header ("Second Enemy")]
     [SerializeField] bool picked_enemy_2;
+    [Space]
+    public bool basic_attack_requested;
+    public bool magic_attack_requested;
+    public bool enemy_attack_requested;
     //pull enemy stats from enemy scriptable object
     EnemyStatsScript enemyStatsScript;
 
@@ -70,11 +72,15 @@ public class BattleSystemScript : MonoBehaviour
     }
     //set debug to get to dungeon scene 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Space))
+        //if both enemies are dead, go back to dungeon scene 
+        if (enemyHP[0].value <= 0 && enemyHP[1].value <= 0 || debugSkip) 
         {
             SceneManager.LoadScene(dungeon_scene.name);
         }
+
     }
+
+    bool debugSkip => Input.GetKeyDown(KeyCode.Space);
     //set up battle system
     //set up battle intro
     IEnumerator StartBattle() {
@@ -131,10 +137,14 @@ public class BattleSystemScript : MonoBehaviour
 
         //start basic attack co-routine
         StartCoroutine(BasicAttack());
+        //flip attack bool 
+        basic_attack_requested = true;
     }
     public void MagicAttackAction() {
         //start magic attack co-routine
         StartCoroutine(MagicAttack());
+        //flip magic bool 
+        magic_attack_requested = true;
 
     }
     public void HealAction(){
@@ -154,17 +164,21 @@ public class BattleSystemScript : MonoBehaviour
     //basic attack co-routine
     public IEnumerator BasicAttack()
     {
+       
         //deal damage to enemy
-        int damage = 10;
+        int damage = 25;
+
         //have player choose enemy to attack 
         if (picked_enemy_1)
         {
+            yield return new WaitForSeconds(1f);
             nar_text.text = "You dealt " + damage + " damage!";
             yield return new WaitForSeconds(1f);
             enemyHP[0].value -= damage;
         }
         else if (picked_enemy_2)
         {
+            yield return new WaitForSeconds(1f);
             nar_text.text = "You dealt " + damage + " damage!";
             yield return new WaitForSeconds(1f);
             enemyHP[1].value -= damage;
@@ -197,7 +211,7 @@ public class BattleSystemScript : MonoBehaviour
     {
         //deal damage to enemy
 
-        int damage = 15;
+        int damage = 40;
 
         if (picked_enemy_1)
         {
@@ -252,6 +266,8 @@ public class BattleSystemScript : MonoBehaviour
     //enemy's turn co-routine
     IEnumerator EnemyTurn()
     {
+        //set up enemy anim request
+        enemy_attack_requested = true;
         //enemy attacks player
         playerHP.value -= enemy_damage[0];
         nar_text.text = "The " + enemy_name[0].text + " dealt " + enemy_damage[0] + " damage!";
