@@ -8,6 +8,8 @@ public class EnemyAnimation : MonoBehaviour
     //grab battle instantiation script 
     [SerializeField] GameObject enemy_BS;
     public GameObject[] enemy;
+    public bool player_hurt;
+
     void Start()
     {
         BSS = GameObject.Find("Battle Canvas").GetComponent<BattleSystemScript>();
@@ -15,6 +17,7 @@ public class EnemyAnimation : MonoBehaviour
             enemy[0] = enemy_BS.transform.GetChild(0).gameObject;
             enemy[1] = enemy_BS.transform.GetChild(1).gameObject;
     }
+
 
     void Update()
     {
@@ -24,6 +27,9 @@ public class EnemyAnimation : MonoBehaviour
             StartCoroutine(PlayAttackAnim());
             //reset enemy attack request
             BSS.enemy_attack_requested = false;
+        }
+        if (BSS.dead) {
+            StartCoroutine(DeathAnim());
         }
 
     }
@@ -35,13 +41,48 @@ public class EnemyAnimation : MonoBehaviour
         if (BSS.enemyHP[0].value != 0)
         {
             enemy[0].GetComponent<Animator>().Play("Attack");
+            // play player hurt anim
+            yield return new WaitForSeconds(0.5f);
+
+            player_hurt = true;
         }
+        
         //wait for 2 seconds before second enemy anim 
         yield return new WaitForSeconds(2f);
         //play second enemy attack animation
         if (BSS.enemyHP[1].value != 0)
         {
             enemy[1].GetComponent<Animator>().Play("Attack");
+            // play player hurt anim
+            yield return new WaitForSeconds(0.5f);
+
+                player_hurt = true;
         }
+    }
+
+    public IEnumerator PlayHurtAnim()
+    {
+        yield return new WaitForSeconds(0.5f);
+        //play first enemy hurt anim 
+        if (BSS.picked_enemy_1) enemy[0].GetComponent<Animator>().Play("Hurt");
+        yield return new WaitForSeconds(2f);
+
+        //play second enemy hurt anim
+        if (BSS.picked_enemy_2) enemy[1].GetComponent<Animator>().Play("Hurt");
+        yield return new WaitForSeconds(2f);
+    }
+
+    public IEnumerator DeathAnim() {
+        if (BSS.enemyHP[0].value < 0) {
+            enemy[0].GetComponent<Animator>().Play("Dead");
+        }
+        yield return new WaitForSeconds(1f);
+
+        if (BSS.enemyHP[1].value < 0)
+        {
+            enemy[1].GetComponent<Animator>().Play("Dead");
+        }
+        yield return new WaitForSeconds(1f);
+        
     }
 }

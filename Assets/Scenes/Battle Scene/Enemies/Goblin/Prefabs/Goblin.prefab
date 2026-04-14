@@ -132,3 +132,5 @@ MonoBehaviour:
   enemy:
   - {fileID: 0}
   - {fileID: 0}
+  battleAnimations: {fileID: 7072292241282920015, guid: aa65eb7b348f4e94498c10bc21128d25,
+    type: 3}

@@ -10,6 +10,7 @@ TagManager:
   - Enemy
   - Chest
   - Interactable
+  - Potion
   layers:
   - Default
   - TransparentFX

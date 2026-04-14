@@ -3,6 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
+    ItemPickup ItemPickup;
+    public GameObject[] interactables;
+    public int potion = 0;
     void Awake()
     {
         DontDestroyOnLoad(this);
@@ -13,14 +16,15 @@ public class SceneLoader : MonoBehaviour
     {
             SceneManager.LoadScene(sceneName);
     }
-    //any file with the interactable tag give itempickup script
-    void GetTag() { 
-        GameObject[] interactables = GameObject.FindGameObjectsWithTag("Interactable");
-        for (int i = 0; i < interactables.Length; i++)
-        {
-            interactables[i].AddComponent<ItemPickup>();
+    //any file with the interactable tag get Item pickup script
+    void GetTag() {
+        interactables = GameObject.FindGameObjectsWithTag("Interactable");
+        //get item pickup script 
+        for (int i = 0; i < interactables.Length; i++) {
+            ItemPickup = interactables[i].GetComponent<ItemPickup>();
         }
     }
+
 
 }
 
