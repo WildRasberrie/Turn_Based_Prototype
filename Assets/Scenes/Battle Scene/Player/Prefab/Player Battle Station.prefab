@@ -139,9 +139,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   playerPrefab: {fileID: 2321184799716355412, guid: aa65eb7b348f4e94498c10bc21128d25,
     type: 3}
+  Player_Parent: {fileID: 1183198017284344613}
+  Enemy_Parent: {fileID: 0}
   enemyPrefabs:
   - {fileID: 7322041003840677876, guid: 98e2344bca83294499802f5534d017a4, type: 3}
-  - {fileID: 7322041003840677876, guid: 98e2344bca83294499802f5534d017a4, type: 3}
+  - {fileID: 2764601327218990646, guid: 8fe3d4c2a61598d43b31510a382a1688, type: 3}
+  enemyClone: []
   player_spawn_point: {fileID: 2975115802569783384}
   enemy_spawn_point:
   - {fileID: 0}

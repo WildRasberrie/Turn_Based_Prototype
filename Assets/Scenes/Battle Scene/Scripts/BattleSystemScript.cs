@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
-using UnityEditor;
 using UnityEngine.SceneManagement;
 public class BattleSystemScript : MonoBehaviour
 {
@@ -35,7 +34,8 @@ public class BattleSystemScript : MonoBehaviour
     [Header ("First Enemy")]
     public bool picked_enemy_1;
     public Button enemy_1;
-    public bool dead;
+    public bool dead1, dead2;
+
     [Space]
     [Header ("Second Enemy")]
     public bool picked_enemy_2;
@@ -55,22 +55,58 @@ public class BattleSystemScript : MonoBehaviour
     public bool magic_attack_requested;
     [Space]
     public bool enemy_attack_requested;
+    Color[] enemy_HP_color;
 
 
     bool magic_button_pressed, basic_button_pressed;
     //pull enemy stats from enemy scriptable object
-    EnemyStatsScript enemyStatsScript;
+    public EnemyStatsScript enemyStatsScript;
 
-    [SerializeField] SceneAsset dungeon_scene;
-    [SerializeField] BattleAnimations Battle_Anims;
+    [SerializeField] SceneLoader SceneLoader;
 
+    void Awake() {
+        SceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
+    }
     void Start()
     {
         enemyStatsScript = gameObject.GetComponent<EnemyStatsScript>();
-        if (GameObject.Find("Player") != null) Battle_Anims = GameObject.Find("Player").GetComponent<BattleAnimations>();
         StartCoroutine(StartBattle());
     }
 
+    void Update()
+    {
+        //if both enemies are dead, go back to dungeon scene 
+        if (enemyHP[0].value <= 0 && enemyHP[1].value <= 0 || debugSkip)
+        {
+            SceneManager.LoadScene("Dungeon_lvl1");
+        }
+
+        //dont allow mana to go below zero 
+        if (SceneLoader.playerMP <= 0)
+        {
+            StartCoroutine(ManaWarning());
+        }
+
+        picked_target = picked_enemy_2 || picked_enemy_1;
+        requested_action = basic_button_pressed || magic_button_pressed;
+
+
+        PlayerAttackAnims();
+
+        if (requested_action) nar_text.text = "Choose an enemy";
+
+        TrackAttackSelection();
+        TrackPlayerStats();
+    }
+
+    IEnumerator ManaWarning() {
+
+        yield return new WaitForSeconds(1f);
+        SceneLoader.playerMP = 0;
+        nar_text.text = "No Mana left, Go to your inventory to use a potion!";
+        yield return new WaitForSeconds(2f);
+
+    }
     //set up player and enemy stats
     void SetUpStats() {
         //set up player stats
@@ -78,10 +114,9 @@ public class BattleSystemScript : MonoBehaviour
         player_lvl.text = "Lvl. 1";
 
         //grab hp from scene loader 
-        playerHP.value = 100;
-
         //grab mp from scene loader 
-        playerMP.value = 50;
+        playerHP.value = SceneLoader.playerHP;
+        playerMP.value = SceneLoader.playerMP;
 
         //set up enemy stats
         //grab enemy stats from enemy scriptable object
@@ -98,33 +133,38 @@ public class BattleSystemScript : MonoBehaviour
             enemy_damage[i] = enemyStatsScript.enemy_atk[i];
         }
     }
-    //set debug to get to dungeon scene 
-    void Update() {
-        //if both enemies are dead, go back to dungeon scene 
-        if (enemyHP[0].value <= 0 && enemyHP[1].value <= 0 || debugSkip) 
+
+    void TrackPlayerStats() {
+        //grab hp from scene loader 
+        //grab mp from scene loader 
+        playerHP.value = SceneLoader.playerHP;
+        playerMP.value = SceneLoader.playerMP;
+
+        if (both_dead) SceneLoader.LoadScene("Dungeon_lvl1");
+
+        var player_HP_color = playerHP.GetComponentInChildren<Image>().color;
+
+        if (SceneLoader.playerHP == 100)
         {
-            SceneManager.LoadScene(dungeon_scene.name);
+            player_HP_color = Color.green;
         }
-
-        //dont allow mana to go below zero 
-        if (playerMP.value <= 0)
+        if (SceneLoader.playerHP < 50)
         {
-            playerMP.value = 0;
-            nar_text.text = "No Mana left, Go to your inventory to use a potion!";
+            player_HP_color = Color.orange;
         }
-
-        picked_target = picked_enemy_2 || picked_enemy_1;
-        requested_action = basic_button_pressed || magic_button_pressed;
-
-
-        PlayerAttackAnims();
-
-        if (requested_action) nar_text.text = "Choose an enemy";
-
-        TrackAttackSelection();
-
+        else if (SceneLoader.playerHP < 25)
+        {
+            player_HP_color = Color.red;
+        }
     }
 
+ 
+        //grab enemy health for both 
+    public bool both_dead => enemyHP[0].value <= 0 && enemyHP[1].value <= 0;
+    
+
+    //set debug to get to dungeon scene 
+ 
     bool debugSkip => Input.GetKeyDown(KeyCode.Space);
     //set up battle system
     //set up battle intro
@@ -135,6 +175,9 @@ public class BattleSystemScript : MonoBehaviour
         nar_text.text = "You were spotted by enemies!";
         //wait for 2 seconds
         yield return new WaitForSeconds(2f);
+        //play start battle sound 
+        AudioLibrary.Instance.PlaySound(Sfx.Taunt);
+
         StartCoroutine(ChooseAction());
     }
     //choose enemy to attack 
@@ -144,6 +187,8 @@ public class BattleSystemScript : MonoBehaviour
         {
             picked_enemy_1 = true;
             picked_enemy_2 = false;
+            StartCoroutine(SceneLoader.PlayUI());
+
             enemy_stat_background[0].color = Color.yellow;
             enemy_stat_background[1].color = Color.blue;
         }
@@ -154,6 +199,8 @@ public class BattleSystemScript : MonoBehaviour
         {
             picked_enemy_1 = false;
             picked_enemy_2 = true;
+            StartCoroutine(SceneLoader.PlayUI());
+
             enemy_stat_background[1].color = Color.yellow;
             enemy_stat_background[0].color = Color.blue;
         }
@@ -188,6 +235,7 @@ public class BattleSystemScript : MonoBehaviour
     //check to see which pop up button is pressed
     public void BasicAttackAction()
     {
+        StartCoroutine(SceneLoader.PlayUI());
         //change action button color 
         basic_button_pressed = true;
         
@@ -195,6 +243,8 @@ public class BattleSystemScript : MonoBehaviour
 
     public void MagicAttackAction()
     {
+        StartCoroutine(SceneLoader.PlayUI());
+
 
         //change action button color 
         magic_button_pressed = true;
@@ -220,6 +270,7 @@ public class BattleSystemScript : MonoBehaviour
         {
             button_background_magic.color = Color.yellow;
 
+
         }
         else
         {
@@ -227,7 +278,6 @@ public class BattleSystemScript : MonoBehaviour
         }
 
     }
-
     void PlayerAttackAnims() {
 
         //flip attack bool to start animation if enemy is picked 
@@ -254,12 +304,15 @@ public class BattleSystemScript : MonoBehaviour
     }
 
     public void HealAction(){
-        if (playerHP.value < playerHP.maxValue) StartCoroutine(Heal());
+        if (SceneLoader.playerHP >= 100) SceneLoader.playerHP = 100;
+        if (SceneLoader.playerHP < playerHP.maxValue) StartCoroutine(Heal());
     }
 
     //if attack button is pressed, pop up attack options
     public void AttackOptions()
     {
+        StartCoroutine(SceneLoader.PlayUI());
+
         //track if button is pressed already
         bool isPressed = pop_up.activeSelf;
 
@@ -273,21 +326,37 @@ public class BattleSystemScript : MonoBehaviour
        
         //deal damage to enemy
         int damage = 25;
+      
 
         //have player choose enemy to attack 
         if (picked_enemy_1)
         {
             yield return new WaitForSeconds(1f);
             nar_text.text = "You dealt " + damage + " damage!";
+            //play Damage Sound & player action sound
+
+            AudioLibrary.Instance.PlaySound(Sfx.Tone);
+
+
+            AudioLibrary.Instance.PlaySound(Sfx.Attack);
             yield return new WaitForSeconds(1f);
             enemyHP[0].value -= damage;
+            //play enemy hurt sound
+            AudioLibrary.Instance.PlaySound(Sfx.Hurt);
         }
         else if (picked_enemy_2)
         {
             yield return new WaitForSeconds(1f);
             nar_text.text = "You dealt " + damage + " damage!";
+            //play Damage SOund 
+            AudioLibrary.Instance.PlaySound(Sfx.Tone);
+
+
+            AudioLibrary.Instance.PlaySound(Sfx.Attack);
             yield return new WaitForSeconds(1f);
             enemyHP[1].value -= damage;
+            //play enemy hurt sound
+            AudioLibrary.Instance.PlaySound(Sfx.Hurt);
             //enemy's turn
 
         }
@@ -303,11 +372,17 @@ public class BattleSystemScript : MonoBehaviour
         //check if enemy is dead
         if (enemyHP[0].value <= 0)
         {
+            AudioLibrary.Instance.PlaySound(Sfx.Dead);
+
             nar_text.text = "You defeated the " + enemy_name[0].text + "!";
+            dead1= true;
             yield break;
         }
         if (enemyHP[1].value <= 0)
         {
+            AudioLibrary.Instance.PlaySound(Sfx.Dead);
+
+            dead2 = true;
             nar_text.text = "You defeated the " + enemy_name[1].text + "!";
             yield break;
         }
@@ -321,19 +396,32 @@ public class BattleSystemScript : MonoBehaviour
         int MP_Depletion = 10;
 
         //take away mana 
-        playerMP.value -= MP_Depletion;
+        SceneLoader.playerMP -= MP_Depletion;
         
         if (picked_enemy_1)
         {
             nar_text.text = "You dealt " + damage + " damage!";
+            //play Damage SOund 
+            AudioLibrary.Instance.PlaySound(Sfx.Tone);
+
+            AudioLibrary.Instance.PlaySound(Sfx.Attack);
             yield return new WaitForSeconds(1f);
+
             enemyHP[0].value -= damage;
+            //play enemy hurt sound
+            AudioLibrary.Instance.PlaySound(Sfx.Hurt);
         }
         else if (picked_enemy_2)
         {
             nar_text.text = "You dealt " + damage + " damage!";
+            //play Damage SOund 
+            AudioLibrary.Instance.PlaySound(Sfx.Tone);
+
+            AudioLibrary.Instance.PlaySound(Sfx.Attack);
             yield return new WaitForSeconds(1f);
             enemyHP[1].value -= damage;
+            //play enemy hurt sound
+            AudioLibrary.Instance.PlaySound(Sfx.Hurt);
         }
         //reset enemy pick
         ResetEnemyPick();
@@ -347,20 +435,30 @@ public class BattleSystemScript : MonoBehaviour
         //check if enemy is dead
         if (enemyHP[0].value <= 0)
         {
+            //turn off fill on slider 
+            enemyHP[0].transform.GetChild(1).gameObject.SetActive(false);
+
+            AudioLibrary.Instance.PlaySound(Sfx.Dead);
+
             nar_text.text = "You defeated the " + enemy_name[0].text + "!";
             //make enemy unselectable
             enemy_1.interactable = false;
             //play enemy death anim 
-            dead = true;
+            dead1 = true;
 
             yield break;
         }
         if (enemyHP[1].value <= 0)
         {
+            //turn off fill on slider 
+            enemyHP[1].transform.GetChild(1).gameObject.SetActive(false);
+
+            AudioLibrary.Instance.PlaySound(Sfx.Dead);
+
             nar_text.text = "You defeated the " + enemy_name[1].text + "!";
             //make enemy unselectable if dead
             enemy_1.interactable = false;
-            dead = true;
+            dead2 = true;
             yield break;
         }
 
@@ -375,8 +473,8 @@ public class BattleSystemScript : MonoBehaviour
         //lose MP 
         int MP_Depletion = 10;
 
-        playerHP.value += healAmount;
-        playerMP.value -= MP_Depletion;
+        SceneLoader.playerHP += healAmount;
+        SceneLoader.playerMP -= MP_Depletion;
         nar_text.text = "You healed " + healAmount + " HP!";
         yield return new WaitForSeconds(1f);
         nar_text.text = "You lost " + MP_Depletion + "MP!";
@@ -394,24 +492,41 @@ public class BattleSystemScript : MonoBehaviour
         //set up enemy anim request
         enemy_attack_requested = true;
         //enemy attacks player
-        playerHP.value -= enemy_damage[0]; 
-        
-        yield return new WaitForSeconds(2f);
-        nar_text.text = "The " + enemy_name[0].text + " dealt " + enemy_damage[0] + " damage!";
-        
-        yield return new WaitForSeconds(2f);
-       
-        //enemy 2 attacks player
-        playerHP.value -= enemy_damage[1];
-        nar_text.text = "The " + enemy_name[1].text + " dealt " + enemy_damage[1] + " damage!";
+        if (enemyHP[0].value != 0)
+        {
+            SceneLoader.playerHP -= enemy_damage[0];
 
+            //play enemy attack sound 
+            AudioLibrary.Instance.PlaySound(Sfx.Attack);
+            yield return new WaitForSeconds(1f);
+
+            AudioLibrary.Instance.PlaySound(Sfx.Hurt);
+
+            yield return new WaitForSeconds(1f);
+            nar_text.text = "The " + enemy_name[0].text + " dealt " + enemy_damage[0] + " damage!";
+        }
+        yield return new WaitForSeconds(1f);
+        if (enemyHP[1].value != 0)
+        {
+            //enemy 2 attacks player
+            AudioLibrary.Instance.PlaySound(Sfx.Attack);
+            yield return new WaitForSeconds(1f);
+
+            AudioLibrary.Instance.PlaySound(Sfx.Hurt);
+
+            SceneLoader.playerHP -= enemy_damage[1];
+            nar_text.text = "The " + enemy_name[1].text + " dealt " + enemy_damage[1] + " damage!";
+        }
         yield return new WaitForSeconds(2f);
 
         //check if player is dead
-        if (playerHP.value <= 0)
+        if (SceneLoader.playerHP <= 0)
         {
             nar_text.text = "You were defeated!";
-            yield break;
+            AudioLibrary.Instance.PlaySound(Sfx.Dead);
+
+            yield return new WaitForSeconds(1f);
+            SceneLoader.LoadScene("Dungeon_lvl1");
         }
 
         StartCoroutine(ChooseAction());

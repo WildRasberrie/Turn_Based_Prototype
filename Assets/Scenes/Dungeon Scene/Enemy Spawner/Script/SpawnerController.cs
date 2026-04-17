@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEditor;
 using System.Collections;
 
 public class SpawnerController : MonoBehaviour
@@ -11,8 +10,6 @@ public class SpawnerController : MonoBehaviour
     [Range(0, 100)]
     public float spawn_ratio = 100;
     float ratio; // The ratio of player encountering the enemy
-    [Space]
-    public SceneAsset scene_name; // The name of the scene to load when the enemy is spawned
     [Space]
     public GameObject player;
     public SceneLoader SceneLoader;
@@ -46,10 +43,9 @@ public class SpawnerController : MonoBehaviour
     {
         
         for (int i = 0; i < enemy_loc.Length; i++) { 
-            if (DistanceDetection(player.transform.position, i,5)) {
+            if (DistanceDetection(player.transform.position, i, 2)) {
 
             spawn = true;
-            print("Player is hitting enemy spawner");
             StartCoroutine(SpawnEnemy());
             }
         }
@@ -65,20 +61,31 @@ public class SpawnerController : MonoBehaviour
     IEnumerator SpawnEnemy() {
         // have random number spawn once when called 
 
-        ratio = Random.Range(0,spawn_ratio);
+        ratio = Random.Range(0,100);
 
-        random = ratio / 100f; //get the ratio of player encountering the enemy
+        var max_ratio = (spawn_ratio)/ 100;
+
+        random = ratio/100; //get the ratio of player encountering the enemy
+
+        if (random >= max_ratio)
+        {
+            spawn = true;
+        }
+        else { 
+            spawn = false;
+        }
+
         if (spawn)
         {
-            if (random >= .9f)
-            {
-                //p]ay fade out animation 
-                yield return new WaitForSeconds(1f);
-                SceneLoader.LoadScene(scene_name.name);
-            }
-                spawn = false;
+            //p]ay fade out animation 
+            yield return new WaitForSeconds(1f);
+            SceneLoader.LoadScene("BattleScene");
+            spawn = false;
         }
     }
+
+
+    
     public bool DistanceDetection(Vector3 target, int index, int distance) {
         return (Vector3.Distance(enemy_loc[index].transform.position, target) < distance);
     }

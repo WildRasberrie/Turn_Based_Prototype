@@ -11,6 +11,7 @@ TagManager:
   - Chest
   - Interactable
   - Potion
+  - Inventory
   layers:
   - Default
   - TransparentFX

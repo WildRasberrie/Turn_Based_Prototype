@@ -8,9 +8,13 @@ public class ItemPickup : MonoBehaviour
    public bool pickup;
    public GameObject inventory;
     SceneLoader SceneLoader;
+    public bool interacted;
+    Animator anim;
+
     private void Awake()
     {
         SceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
+        anim = GetComponent<Animator>();
     }
     void Start()
     {
@@ -19,35 +23,38 @@ public class ItemPickup : MonoBehaviour
     }
     void Update()
     {
+        interacted = distanceDetection && Input.GetKeyDown(KeyCode.E);
+
         if (interacted )
         {
-            var anim = GetComponent<Animator>();
             //play open anim 
-            anim.Play("Open Chest");
+            StartCoroutine(PlayChestOpenSound());
+            // Start add to inventory
             //add item to inventory
                 pickup = true;
-            AddItemToInventory();
+            StartCoroutine(AddInventory());
         }
 
     }
-    
-    public void AddItemToInventory()
-    {
-        if (pickup)
-        {
-            //play pickup animation
-            StartCoroutine(AddInventory());
-            SceneLoader.potion++;
-            pickup = false;
-        }
+
+    IEnumerator PlayChestOpenSound() {
+
+        AudioLibrary.Instance.PlaySound(Sfx.Open_Chest);
+        yield return new WaitForSeconds(1f);
+        anim.Play("Open Chest");
+
     }
 
     IEnumerator AddInventory()
     {
         yield return new WaitForSeconds(1f);
-        var anim = GetComponent<Animator>();
+        AudioLibrary.Instance.PlaySound(Sfx.Gained_Item);
+        yield return new WaitForSeconds(1f);
         anim.Play("Item Pickup");
+
+        SceneLoader.potion++;
+        yield return new WaitForSeconds(1f);
+        pickup = false;
     }
-    public bool interacted => distanceDetection && Input.GetKeyDown(KeyCode.E);
 
 }

@@ -7,18 +7,21 @@ public class EnemyAnimation : MonoBehaviour
     BattleSystemScript BSS;
     //grab battle instantiation script 
     [SerializeField] GameObject enemy_BS;
-    public GameObject[] enemy;
+    public GameObject[] enemy_GO;
     public bool player_hurt;
 
-    void Start()
+    void Awake()
     {
         BSS = GameObject.Find("Battle Canvas").GetComponent<BattleSystemScript>();
+        Battle_Instantiation battle_instant = GameObject.Find("Player Battle Station").GetComponent<Battle_Instantiation>();
         enemy_BS = GameObject.Find("Enemies");
-            enemy[0] = enemy_BS.transform.GetChild(0).gameObject;
-            enemy[1] = enemy_BS.transform.GetChild(1).gameObject;
+        //get children 
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            enemy_GO[i] = transform.GetChild(i).gameObject;
+        }
     }
-
-
+        
     void Update()
     {
         //if enemy attack requested, play attack animation
@@ -28,10 +31,8 @@ public class EnemyAnimation : MonoBehaviour
             //reset enemy attack request
             BSS.enemy_attack_requested = false;
         }
-        if (BSS.dead) {
-            StartCoroutine(DeathAnim());
-        }
-
+        if (BSS.dead1) StartCoroutine(Enemy1_DeathAnim());
+        if (BSS.dead2)  StartCoroutine(Enemy2_DeathAnim());
     }
 
     IEnumerator PlayAttackAnim()
@@ -40,7 +41,7 @@ public class EnemyAnimation : MonoBehaviour
         //if enemy is not dead, play attack animation
         if (BSS.enemyHP[0].value != 0)
         {
-            enemy[0].GetComponent<Animator>().Play("Attack");
+            enemy_GO[0].GetComponent<Animator>().Play("Attack");
             // play player hurt anim
             yield return new WaitForSeconds(0.5f);
 
@@ -52,7 +53,7 @@ public class EnemyAnimation : MonoBehaviour
         //play second enemy attack animation
         if (BSS.enemyHP[1].value != 0)
         {
-            enemy[1].GetComponent<Animator>().Play("Attack");
+            enemy_GO[1].GetComponent<Animator>().Play("Attack");
             // play player hurt anim
             yield return new WaitForSeconds(0.5f);
 
@@ -64,25 +65,22 @@ public class EnemyAnimation : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         //play first enemy hurt anim 
-        if (BSS.picked_enemy_1) enemy[0].GetComponent<Animator>().Play("Hurt");
+        if (BSS.picked_enemy_1) enemy_GO[0].GetComponent<Animator>().Play("Hurt");
         yield return new WaitForSeconds(2f);
 
         //play second enemy hurt anim
-        if (BSS.picked_enemy_2) enemy[1].GetComponent<Animator>().Play("Hurt");
+        if (BSS.picked_enemy_2) enemy_GO[1].GetComponent<Animator>().Play("Hurt");
         yield return new WaitForSeconds(2f);
     }
 
-    public IEnumerator DeathAnim() {
-        if (BSS.enemyHP[0].value < 0) {
-            enemy[0].GetComponent<Animator>().Play("Dead");
-        }
+    public IEnumerator Enemy1_DeathAnim() {
+            enemy_GO[0].GetComponent<Animator>().Play("Dead");
         yield return new WaitForSeconds(1f);
 
-        if (BSS.enemyHP[1].value < 0)
-        {
-            enemy[1].GetComponent<Animator>().Play("Dead");
-        }
+    }
+
+    public IEnumerator Enemy2_DeathAnim() { 
+        enemy_GO[1].GetComponent<Animator>().Play("Dead");
         yield return new WaitForSeconds(1f);
-        
     }
 }
