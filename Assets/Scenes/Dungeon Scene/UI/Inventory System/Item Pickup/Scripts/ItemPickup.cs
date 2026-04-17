@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ public class ItemPickup : MonoBehaviour
     SceneLoader SceneLoader;
     public bool interacted;
     Animator anim;
+    public GameObject interact_text;
 
     private void Awake()
     {
@@ -25,13 +27,22 @@ public class ItemPickup : MonoBehaviour
     {
         interacted = distanceDetection && Input.GetKeyDown(KeyCode.E);
 
-        if (interacted )
+
+        if (distanceDetection)
+        {
+            interact_text.SetActive(true);
+        }
+        else {
+            interact_text.SetActive(false);
+        }
+
+        if (interacted)
         {
             //play open anim 
             StartCoroutine(PlayChestOpenSound());
             // Start add to inventory
             //add item to inventory
-                pickup = true;
+            pickup = true;
             StartCoroutine(AddInventory());
         }
 
@@ -47,10 +58,12 @@ public class ItemPickup : MonoBehaviour
 
     IEnumerator AddInventory()
     {
-        yield return new WaitForSeconds(1f);
-        AudioLibrary.Instance.PlaySound(Sfx.Gained_Item);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         anim.Play("Item Pickup");
+        yield return new WaitForSeconds(1f);
+
+        AudioLibrary.Instance.PlaySound(Sfx.Gained_Item);
+
 
         SceneLoader.potion++;
         yield return new WaitForSeconds(1f);

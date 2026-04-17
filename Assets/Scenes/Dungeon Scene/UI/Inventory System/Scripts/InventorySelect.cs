@@ -89,7 +89,6 @@ public class InventorySelect : MonoBehaviour
         if (yes)
         {
             potion_selected = false;
-            StartCoroutine(SceneLoader.PlayUI());
 
             UI_Sprite.SetActive(false);
 
@@ -98,7 +97,6 @@ public class InventorySelect : MonoBehaviour
         }
         else if (no) {
             potion_selected = false;
-            StartCoroutine(SceneLoader.PlayUI());
 
             UI_Sprite.SetActive(false);
 
@@ -108,15 +106,20 @@ public class InventorySelect : MonoBehaviour
 
     public void YesButton() {
         yes = true;
-
+        StartCoroutine(SceneLoader.PlayUI());
     }
 
     public void NoButton() {
         no = true;
+        StartCoroutine(SceneLoader.PlayUI());
+
     }
     public void SelectPotion()
     {
         potion_selected = true;
+        AudioLibrary.Instance.PlaySound(Sfx.Increase_Stats);
+
+
     }
 
     IEnumerator DrinkUp()
@@ -128,7 +131,6 @@ public class InventorySelect : MonoBehaviour
         potion_anim.Play("Drink Up");
         //play gain stats sound 
 
-        AudioLibrary.Instance.PlaySound(Sfx.Increase_Stats);
         addMP = true;
 
         if (SceneLoader.potion > 0)  SceneLoader.potion -= 1;

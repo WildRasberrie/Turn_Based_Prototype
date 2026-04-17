@@ -55,6 +55,8 @@ public class BattleSystemScript : MonoBehaviour
     public bool magic_attack_requested;
     [Space]
     public bool enemy_attack_requested;
+    [Space]
+    public bool player_dead;
     Color[] enemy_HP_color;
 
 
@@ -66,10 +68,14 @@ public class BattleSystemScript : MonoBehaviour
 
     void Awake() {
         SceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
+        for (int i = 0; i < 2; i++)
+        {
+            enemyStatsScript = GameObject.Find("Enemies").transform.GetChild(i).gameObject.GetComponent<EnemyStatsScript>();
+        }
+
     }
     void Start()
     {
-        enemyStatsScript = gameObject.GetComponent<EnemyStatsScript>();
         StartCoroutine(StartBattle());
     }
 
@@ -120,8 +126,9 @@ public class BattleSystemScript : MonoBehaviour
 
         //set up enemy stats
         //grab enemy stats from enemy scriptable object
-        for (int i = 0; i < enemyStatsScript.enemy_name.Length; i++)
+        for (int i = 0; i < 2; i++)
         {
+            
             //set enemy name text to enemy name stat
             enemy_name[i].text = enemyStatsScript.enemy_name[i];
             //set enemy level text to enemy level stat
@@ -169,6 +176,7 @@ public class BattleSystemScript : MonoBehaviour
     //set up battle system
     //set up battle intro
     IEnumerator StartBattle() {
+        yield return new WaitForSeconds(1f);
         //set up stats
         SetUpStats();
         //set up battle text
@@ -404,7 +412,7 @@ public class BattleSystemScript : MonoBehaviour
             //play Damage SOund 
             AudioLibrary.Instance.PlaySound(Sfx.Tone);
 
-            AudioLibrary.Instance.PlaySound(Sfx.Attack);
+            AudioLibrary.Instance.PlaySound(Sfx.Magic_attack);
             yield return new WaitForSeconds(1f);
 
             enemyHP[0].value -= damage;
@@ -417,7 +425,7 @@ public class BattleSystemScript : MonoBehaviour
             //play Damage SOund 
             AudioLibrary.Instance.PlaySound(Sfx.Tone);
 
-            AudioLibrary.Instance.PlaySound(Sfx.Attack);
+            AudioLibrary.Instance.PlaySound(Sfx.Magic_attack);
             yield return new WaitForSeconds(1f);
             enemyHP[1].value -= damage;
             //play enemy hurt sound
@@ -509,7 +517,7 @@ public class BattleSystemScript : MonoBehaviour
         if (enemyHP[1].value != 0)
         {
             //enemy 2 attacks player
-            AudioLibrary.Instance.PlaySound(Sfx.Attack);
+            AudioLibrary.Instance.PlaySound(Sfx.Slap);
             yield return new WaitForSeconds(1f);
 
             AudioLibrary.Instance.PlaySound(Sfx.Hurt);
@@ -524,6 +532,9 @@ public class BattleSystemScript : MonoBehaviour
         {
             nar_text.text = "You were defeated!";
             AudioLibrary.Instance.PlaySound(Sfx.Dead);
+
+            //play death anim 
+            player_dead = true;
 
             yield return new WaitForSeconds(1f);
             SceneLoader.LoadScene("Dungeon_lvl1");

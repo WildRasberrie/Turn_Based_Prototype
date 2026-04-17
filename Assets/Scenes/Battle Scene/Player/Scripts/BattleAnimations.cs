@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleAnimations : MonoBehaviour
@@ -43,6 +44,10 @@ public class BattleAnimations : MonoBehaviour
             enemyAnimation.player_hurt = false;
         }
 
+        if (BSS.player_dead) {
+            StartCoroutine(DeathAnim());
+        }
+
     }
 
     IEnumerator PlayEnemyHurtAnim() {
@@ -55,5 +60,13 @@ public class BattleAnimations : MonoBehaviour
         anim = GameObject.Find("Player(Clone)").GetComponent<Animator>();
         anim.Play("Hurt");
         yield return new WaitForSeconds(2f);
+    }
+
+    IEnumerator DeathAnim() {
+        yield return new WaitForSeconds(1f);
+        anim = GameObject.Find("Player(Clone)").GetComponent<Animator>();
+        anim.Play("Dead");
+        yield return new WaitForSeconds(2f);
+
     }
 }

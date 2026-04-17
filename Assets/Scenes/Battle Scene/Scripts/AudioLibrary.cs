@@ -49,5 +49,7 @@ public enum Sfx
     Taunt = 6,
     Tone = 7, 
     Hurt = 8,
-    Dead = 9
+    Dead = 9,
+    Magic_attack = 10,
+    Slap = 11
 }

@@ -8,6 +8,7 @@ public class EnemyAnimation : MonoBehaviour
     //grab battle instantiation script 
     [SerializeField] GameObject enemy_BS;
     public GameObject[] enemy_GO;
+    public Animator[] enemy_anim;
     public bool player_hurt;
 
     void Awake()
@@ -19,6 +20,7 @@ public class EnemyAnimation : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             enemy_GO[i] = transform.GetChild(i).gameObject;
+            enemy_anim[i]= enemy_GO[i].GetComponent<Animator>();
         }
     }
         
@@ -41,7 +43,7 @@ public class EnemyAnimation : MonoBehaviour
         //if enemy is not dead, play attack animation
         if (BSS.enemyHP[0].value != 0)
         {
-            enemy_GO[0].GetComponent<Animator>().Play("Attack");
+            enemy_anim[0].Play("Attack");
             // play player hurt anim
             yield return new WaitForSeconds(0.5f);
 
@@ -53,7 +55,8 @@ public class EnemyAnimation : MonoBehaviour
         //play second enemy attack animation
         if (BSS.enemyHP[1].value != 0)
         {
-            enemy_GO[1].GetComponent<Animator>().Play("Attack");
+            yield return new WaitForSeconds(0.5f);
+            enemy_anim[1].Play("Attack");
             // play player hurt anim
             yield return new WaitForSeconds(0.5f);
 
@@ -65,22 +68,22 @@ public class EnemyAnimation : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         //play first enemy hurt anim 
-        if (BSS.picked_enemy_1) enemy_GO[0].GetComponent<Animator>().Play("Hurt");
+        if (BSS.picked_enemy_1) enemy_anim[0].Play("Hurt");
         yield return new WaitForSeconds(2f);
 
         //play second enemy hurt anim
-        if (BSS.picked_enemy_2) enemy_GO[1].GetComponent<Animator>().Play("Hurt");
+        if (BSS.picked_enemy_2) enemy_anim[1].Play("Hurt");
         yield return new WaitForSeconds(2f);
     }
 
     public IEnumerator Enemy1_DeathAnim() {
-            enemy_GO[0].GetComponent<Animator>().Play("Dead");
+        enemy_anim[0].Play("Dead");
         yield return new WaitForSeconds(1f);
 
     }
 
-    public IEnumerator Enemy2_DeathAnim() { 
-        enemy_GO[1].GetComponent<Animator>().Play("Dead");
+    public IEnumerator Enemy2_DeathAnim() {
+        enemy_anim[1].Play("Dead");
         yield return new WaitForSeconds(1f);
     }
 }

@@ -5,9 +5,17 @@ public class DoNotDestroy : MonoBehaviour
 {
     void Awake()
     {
+        //if theres a duplicate, remove until theres only one 
+
         //set item to not destroy on load
-        
-        DontDestroyOnLoad(this);
+        if (this != null)
+        {
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 
 }

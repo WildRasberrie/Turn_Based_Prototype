@@ -67,7 +67,7 @@ public class SpawnerController : MonoBehaviour
 
         random = ratio/100; //get the ratio of player encountering the enemy
 
-        if (random >= max_ratio)
+        if (random == max_ratio)
         {
             spawn = true;
         }
