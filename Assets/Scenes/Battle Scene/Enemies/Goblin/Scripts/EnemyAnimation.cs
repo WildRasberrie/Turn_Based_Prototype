@@ -14,7 +14,6 @@ public class EnemyAnimation : MonoBehaviour
     void Awake()
     {
         BSS = GameObject.Find("Battle Canvas").GetComponent<BattleSystemScript>();
-        Battle_Instantiation battle_instant = GameObject.Find("Player Battle Station").GetComponent<Battle_Instantiation>();
         enemy_BS = GameObject.Find("Enemies");
         //get children 
         for (int i = 0; i < transform.childCount; i++)
@@ -66,10 +65,10 @@ public class EnemyAnimation : MonoBehaviour
 
     public IEnumerator PlayHurtAnim()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(2f);
+
         //play first enemy hurt anim 
         if (BSS.picked_enemy_1) enemy_anim[0].Play("Hurt");
-        yield return new WaitForSeconds(2f);
 
         //play second enemy hurt anim
         if (BSS.picked_enemy_2) enemy_anim[1].Play("Hurt");

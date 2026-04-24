@@ -1,6 +1,7 @@
 using UnityEngine;
 //use input actions system 
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class Player_Movement : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class Player_Movement : MonoBehaviour
         input.Disable();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         PlayerController();
 

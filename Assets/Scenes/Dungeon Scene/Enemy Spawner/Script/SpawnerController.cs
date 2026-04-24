@@ -52,10 +52,6 @@ public class SpawnerController : MonoBehaviour
 
         print("Chance of enemy encounter is " + spawn_ratio + "%"
             +"\n spawn chance: " + spawn);
-
-        //dont destroy player position after loading into battle scene 
-        player_transform = player.transform;
-        DontDestroyOnLoad(player_transform);
     }
 
     IEnumerator SpawnEnemy() {
@@ -66,12 +62,12 @@ public class SpawnerController : MonoBehaviour
         var max_ratio = (spawn_ratio)/ 100;
 
         random = ratio/100; //get the ratio of player encountering the enemy
-
         if (random == max_ratio)
         {
             spawn = true;
         }
-        else { 
+        else
+        {
             spawn = false;
         }
 

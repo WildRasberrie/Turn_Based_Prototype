@@ -119,30 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &304767468 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5396939529414496248, guid: edc3a2e6dd952564e9f722e3b5e21111,
-    type: 3}
-  m_PrefabInstance: {fileID: 3445658458430843342}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &304767469
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 304767468}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 299cdce023a246848ad41b5224a4fe8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyStatsScript
-  enemy_name:
-  - 
-  - 
-  enemy_lvl: 0000000000000000
-  enemy_hp: 0000000000000000
-  enemy_atk: 0000000000000000
 --- !u!4 &308353926 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6658328905955022945, guid: 89a33e17cbfdb1544a58b1560fd4f624,
@@ -4985,10 +4961,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1991098501}
-    - targetCorrespondingSourceObject: {fileID: 7758759036969087530, guid: 89a33e17cbfdb1544a58b1560fd4f624,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1991098502}
   m_SourcePrefab: {fileID: 100100000, guid: 89a33e17cbfdb1544a58b1560fd4f624, type: 3}
 --- !u!4 &1991098499 stripped
 Transform:
@@ -5022,24 +4994,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   player_hurt: 0
---- !u!114 &1991098502
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1991098500}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 299cdce023a246848ad41b5224a4fe8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyStatsScript
-  enemy_name:
-  - 
-  - 
-  enemy_lvl: 0000000000000000
-  enemy_hp: 0000000000000000
-  enemy_atk: 0000000000000000
 --- !u!1001 &3445658458430843342
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5293,10 +5247,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5396939529414496248, guid: edc3a2e6dd952564e9f722e3b5e21111,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 304767469}
     - targetCorrespondingSourceObject: {fileID: 4676951293347430103, guid: edc3a2e6dd952564e9f722e3b5e21111,
         type: 3}
       insertIndex: -1

@@ -61,17 +61,11 @@ public class BattleSystemScript : MonoBehaviour
 
 
     bool magic_button_pressed, basic_button_pressed;
-    //pull enemy stats from enemy scriptable object
-    public EnemyStatsScript enemyStatsScript;
 
     [SerializeField] SceneLoader SceneLoader;
 
     void Awake() {
         SceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
-        for (int i = 0; i < 2; i++)
-        {
-            enemyStatsScript = GameObject.Find("Enemies").transform.GetChild(i).gameObject.GetComponent<EnemyStatsScript>();
-        }
 
     }
     void Start()
@@ -79,8 +73,9 @@ public class BattleSystemScript : MonoBehaviour
         StartCoroutine(StartBattle());
     }
 
-    void Update()
+        void Update()
     {
+
         //if both enemies are dead, go back to dungeon scene 
         if (enemyHP[0].value <= 0 && enemyHP[1].value <= 0 || debugSkip)
         {
@@ -126,18 +121,25 @@ public class BattleSystemScript : MonoBehaviour
 
         //set up enemy stats
         //grab enemy stats from enemy scriptable object
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < GameObject.Find("Enemies").transform.childCount; i++)
         {
-            
-            //set enemy name text to enemy name stat
-            enemy_name[i].text = enemyStatsScript.enemy_name[i];
-            //set enemy level text to enemy level stat
-            enemy_lvl[i].text = "Lvl. " + enemyStatsScript.enemy_lvl[i];
-            //set enemy HP slider max value and current value to enemy HP stat
-            enemyHP[i].maxValue = enemyStatsScript.enemy_hp[i];
-            enemyHP[i].value = enemyStatsScript.enemy_hp[i];
-            //set enemy damage to enemy attack stat
-            enemy_damage[i] = enemyStatsScript.enemy_atk[i];
+            if (GameObject.Find("Enemies").transform.GetChild(i).name == "Goblin")
+            {
+                enemy_name[i].text = "Goblin";
+                enemy_lvl[i].text = "Lvl. " + 7;
+                enemyHP[i].maxValue = 100;
+                enemyHP[i].value = 100;
+                enemy_damage[i] = 15;
+            }
+            else
+              if (GameObject.Find("Enemies").transform.GetChild(i).name == "Slime")
+            {
+                enemy_name[i].text = "Slime";
+                enemy_lvl[i].text = "Lvl. " + 5;
+                enemyHP[i].maxValue = 75;
+                enemyHP[i].value = 75;
+                enemy_damage[i] = 10;
+            }
         }
     }
 
@@ -177,8 +179,8 @@ public class BattleSystemScript : MonoBehaviour
     //set up battle intro
     IEnumerator StartBattle() {
         yield return new WaitForSeconds(1f);
-        //set up stats
         SetUpStats();
+
         //set up battle text
         nar_text.text = "You were spotted by enemies!";
         //wait for 2 seconds

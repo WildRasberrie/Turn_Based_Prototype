@@ -420,7 +420,6 @@ GameObject:
   - component: {fileID: 2778405304461947705}
   - component: {fileID: 3460310981739482203}
   - component: {fileID: 5705883406101149277}
-  - component: {fileID: 8652041197460985164}
   m_Layer: 5
   m_Name: Battle Canvas
   m_TagString: Untagged
@@ -529,6 +528,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSystemScript
   nar_text: {fileID: 1225805449232494565}
   pop_up: {fileID: 6555533332880572042}
+  basic_attack_button: {fileID: 0}
+  magic_attack_button: {fileID: 0}
+  heal_button: {fileID: 0}
   playerHP: {fileID: 4043924821073356318}
   playerMP: {fileID: 0}
   player_name: {fileID: 238735526018086350}
@@ -547,31 +549,19 @@ MonoBehaviour:
   - {fileID: 3629768020899292251}
   - {fileID: 4834013129863135427}
   picked_enemy_1: 0
+  enemy_1: {fileID: 0}
+  dead1: 0
+  dead2: 0
   picked_enemy_2: 0
+  dead_also: 0
+  enemy_2: {fileID: 0}
+  requested_action: 0
+  picked_target: 0
   basic_attack_requested: 0
   magic_attack_requested: 0
   enemy_attack_requested: 0
-  dungeon_scene: {fileID: 102900000, guid: dbce3e3c859a7384e8a46ac695659c99, type: 3}
-  Battle_Anims: {fileID: 0}
---- !u!114 &8652041197460985164
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5396939529414496248}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 299cdce023a246848ad41b5224a4fe8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  enemy_name:
-  - Bomb
-  - Goblin
-  enemy_lvl: 0a00000007000000
-  enemy_hp: 9600000064000000
-  enemy_atk: 0a00000007000000
-  enemy_sprite: []
+  player_dead: 0
+  SceneLoader: {fileID: 0}
 --- !u!1 &6238851297260695565
 GameObject:
   m_ObjectHideFlags: 0
