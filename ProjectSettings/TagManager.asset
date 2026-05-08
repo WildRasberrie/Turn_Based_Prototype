@@ -12,6 +12,8 @@ TagManager:
   - Interactable
   - Potion
   - Inventory
+  - A Button
+  - DPad
   layers:
   - Default
   - TransparentFX

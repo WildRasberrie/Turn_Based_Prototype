@@ -1,9 +1,6 @@
-using JetBrains.Annotations;
-using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class InventorySelect : MonoBehaviour
@@ -14,12 +11,12 @@ public class InventorySelect : MonoBehaviour
     public GameObject[] Potions;
     int index = 0;
     bool potion_selected;
-    ItemPickup itemPickup;
     public TextMeshProUGUI item_inventory;
     public TextMeshProUGUI UI_Prompt;
     public GameObject UI_Sprite;
     public bool addMP;
 
+    InventoryManager InventoryManager;
     SceneLoader SceneLoader;
 
     bool yes, no;
@@ -27,9 +24,9 @@ public class InventorySelect : MonoBehaviour
     {
         UI_Sprite.SetActive(false);
         //Grab item pickup script from parent
-        if (itemPickup == null)
+        if (InventoryManager == null)
         {
-            itemPickup = GameObject.Find("SceneLoader").GetComponent<ItemPickup>();
+            InventoryManager = GameObject.Find("Inventory").GetComponent<InventoryManager>();
         }
 
         if (Potions != null)
@@ -55,9 +52,9 @@ public class InventorySelect : MonoBehaviour
     void Update()
     {
         //if no potions available, make potion sprite inactive 
-        if (SceneLoader.potion <= 0)
+        if (InventoryManager.potion <= 0)
         {
-            print("You have" + SceneLoader.potion + "potion(s) available!");
+            print("You have" + InventoryManager.potion + "potion(s) available!");
             for (int i = 0; i < Potions.Length; i++)
             {
                 Potions[i].SetActive(false);
@@ -75,7 +72,7 @@ public class InventorySelect : MonoBehaviour
         if (index >= Potions.Length) index = Potions.Length;
 
          // show amount of potions available
-        item_inventory.text = "" + SceneLoader.potion;
+        item_inventory.text = "" + InventoryManager.potion;
 
         if (potion_selected)
         {
@@ -106,12 +103,12 @@ public class InventorySelect : MonoBehaviour
 
     public void YesButton() {
         yes = true;
-        StartCoroutine(SceneLoader.PlayUI());
+        StartCoroutine(InventoryManager.PlayUI());
     }
 
     public void NoButton() {
         no = true;
-        StartCoroutine(SceneLoader.PlayUI());
+        StartCoroutine(InventoryManager.PlayUI());
 
     }
     public void SelectPotion()
@@ -133,8 +130,8 @@ public class InventorySelect : MonoBehaviour
 
         addMP = true;
 
-        if (SceneLoader.potion > 0)  SceneLoader.potion -= 1;
-
+        if (InventoryManager.potion > 0)  InventoryManager.potion -= 1;
+    
     }
 
   

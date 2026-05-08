@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class SpawnerController : MonoBehaviour
@@ -23,6 +22,7 @@ public class SpawnerController : MonoBehaviour
  
     void Start()
     {
+        SceneLoader = GameObject.FindWithTag("SceneLoader").GetComponent<SceneLoader>();
         player_transform = player.transform;
         player.transform.position = player_transform.position;
         //check if there is more than one player in the scene, if there is more than one player
@@ -50,8 +50,8 @@ public class SpawnerController : MonoBehaviour
             }
         }
 
-        print("Chance of enemy encounter is " + spawn_ratio + "%"
-            +"\n spawn chance: " + spawn);
+        //print("Chance of enemy encounter is " + spawn_ratio + "%"
+        //    +"\n spawn chance: " + spawn);
     }
 
     IEnumerator SpawnEnemy() {
@@ -62,7 +62,7 @@ public class SpawnerController : MonoBehaviour
         var max_ratio = (spawn_ratio)/ 100;
 
         random = ratio/100; //get the ratio of player encountering the enemy
-        if (random == max_ratio)
+        if (random == max_ratio && max_ratio != 0)
         {
             spawn = true;
         }

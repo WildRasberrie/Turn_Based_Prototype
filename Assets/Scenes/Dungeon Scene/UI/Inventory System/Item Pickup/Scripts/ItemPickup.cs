@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
 
 public class ItemPickup : MonoBehaviour
@@ -8,24 +9,29 @@ public class ItemPickup : MonoBehaviour
    DistanceDetection distanceDetection;
    public bool pickup;
    public GameObject inventory;
-    SceneLoader SceneLoader;
-    public bool interacted;
+    InventoryManager InventoryManager;
+    public bool interacted, a_pressed;
+
+    public Button A_Button;
     Animator anim;
     public GameObject interact_text;
 
     private void Awake()
     {
-        SceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
+        InventoryManager = GameObject.Find("Inventory").GetComponent<InventoryManager>();
         anim = GetComponent<Animator>();
+        A_Button = GameObject.FindWithTag("A Button").GetComponentInChildren<Button>();
     }
     void Start()
     {
         distanceDetection = GetComponent<DistanceDetection>();
         
     }
+
+    public void AButtonPressed() => a_pressed = true;
     void Update()
     {
-        interacted = distanceDetection && Input.GetKeyDown(KeyCode.E);
+        interacted = distanceDetection && (Input.GetKeyDown(KeyCode.E) || a_pressed);
 
 
         if (distanceDetection)
@@ -65,7 +71,7 @@ public class ItemPickup : MonoBehaviour
         AudioLibrary.Instance.PlaySound(Sfx.Gained_Item);
 
 
-        SceneLoader.potion++;
+        InventoryManager.potion++;
         yield return new WaitForSeconds(1f);
         pickup = false;
     }

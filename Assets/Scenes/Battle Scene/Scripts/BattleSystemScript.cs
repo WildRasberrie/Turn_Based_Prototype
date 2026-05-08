@@ -62,10 +62,13 @@ public class BattleSystemScript : MonoBehaviour
 
     bool magic_button_pressed, basic_button_pressed;
 
+
     [SerializeField] SceneLoader SceneLoader;
+    [SerializeField] InventoryManager InventoryManager;
 
     void Awake() {
-        SceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
+        SceneLoader = GameObject.FindWithTag("SceneLoader").GetComponent<SceneLoader>();
+        InventoryManager = GameObject.FindWithTag("Inventory").GetComponent<InventoryManager>();
 
     }
     void Start()
@@ -197,7 +200,7 @@ public class BattleSystemScript : MonoBehaviour
         {
             picked_enemy_1 = true;
             picked_enemy_2 = false;
-            StartCoroutine(SceneLoader.PlayUI());
+            StartCoroutine(InventoryManager.PlayUI());
 
             enemy_stat_background[0].color = Color.yellow;
             enemy_stat_background[1].color = Color.blue;
@@ -209,7 +212,7 @@ public class BattleSystemScript : MonoBehaviour
         {
             picked_enemy_1 = false;
             picked_enemy_2 = true;
-            StartCoroutine(SceneLoader.PlayUI());
+            StartCoroutine(InventoryManager.PlayUI());
 
             enemy_stat_background[1].color = Color.yellow;
             enemy_stat_background[0].color = Color.blue;
@@ -245,7 +248,7 @@ public class BattleSystemScript : MonoBehaviour
     //check to see which pop up button is pressed
     public void BasicAttackAction()
     {
-        StartCoroutine(SceneLoader.PlayUI());
+        StartCoroutine(InventoryManager.PlayUI());
         //change action button color 
         basic_button_pressed = true;
         
@@ -253,7 +256,7 @@ public class BattleSystemScript : MonoBehaviour
 
     public void MagicAttackAction()
     {
-        StartCoroutine(SceneLoader.PlayUI());
+        StartCoroutine(InventoryManager.PlayUI());
 
 
         //change action button color 
@@ -321,7 +324,7 @@ public class BattleSystemScript : MonoBehaviour
     //if attack button is pressed, pop up attack options
     public void AttackOptions()
     {
-        StartCoroutine(SceneLoader.PlayUI());
+        StartCoroutine(InventoryManager.PlayUI());
 
         //track if button is pressed already
         bool isPressed = pop_up.activeSelf;

@@ -31,7 +31,7 @@ public class KeepCameraStack : MonoBehaviour
     {
         scene = SceneManager.GetActiveScene();
 
-        print(scene.name);
+        //print(scene.name);
         if (scene.name == "BattleScene")
         {
             this.gameObject.SetActive(false);
