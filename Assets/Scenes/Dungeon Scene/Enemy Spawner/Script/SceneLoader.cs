@@ -41,6 +41,8 @@ public class SceneLoader : MonoBehaviour
     void Update()
     {
         InventorySystem();
+
+        ResetGame();
     }
 
     public void LoadScene(string sceneName)
@@ -124,6 +126,18 @@ public class SceneLoader : MonoBehaviour
             yield return new WaitForSeconds(1f);
             i++;
             playerMP += i;
+        }
+        
+    }
+
+    void ResetGame()
+    {
+        if (SceneManager.GetActiveScene().name != "IntroScene")
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                SceneManager.LoadScene("IntroScene");
+            }
         }
         
     }
