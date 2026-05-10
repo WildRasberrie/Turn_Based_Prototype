@@ -50,5 +50,7 @@ public enum Sfx
     Hurt = 8,
     Dead = 9,
     Magic_attack = 10,
-    Slap = 11
+    Slap = 11,
+    Lightning = 12,
+    Howl = 13
 }
