@@ -49,7 +49,7 @@ public class IntroButtonAction : MonoBehaviour
         yield return new WaitForSeconds(.1f);
         anim.Play("ZoomIn");
         yield return new WaitForSeconds(1f);
-        SceneManager.LoadScene("Dungeon_lvl1");
+        SceneManager.LoadScene("DialogueScene");
 
 
 
