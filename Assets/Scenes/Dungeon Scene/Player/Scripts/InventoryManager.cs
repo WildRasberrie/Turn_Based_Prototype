@@ -4,8 +4,10 @@ using System.Collections;
 
 public class InventoryManager : MonoBehaviour
 {
-    ItemPickup ItemPickup;
+    [Header("Chests")]
     public GameObject[] interactables;
+    [Header ("Potions Game Object")]
+    public GameObject potionGO;
     [Header("Inventory Selection Script")]
     public InventorySelect InventorySelect;
     [Space]
@@ -13,83 +15,59 @@ public class InventoryManager : MonoBehaviour
     [Header("Inventory Stats")]
     public int potion = 0;
     public GameObject inventory;
-    public bool clicked;
-    public bool requested_inventory;
     public Animator bag;
 
     void Start()
     {
         GetTag();
+        inventory.SetActive(false);
 
     }
 
     void Update()
     {
-        InventorySystem();
+        if (potion == 0) { potionGO.SetActive(false); }
+        else { potionGO.SetActive(true); }
+
     }
     void GetTag()
     {
         if (inventory == null && SceneManager.GetActiveScene().name != "IntroScene")
         {
             inventory = GameObject.Find("Inventory");
-
-        }
-        if (inventory != null)
-        {
             //find Inventory Select Script
             if (InventorySelect == null) InventorySelect = GameObject.Find("Items").GetComponent<InventorySelect>();
             if (bag == null)
             {
                 bag = GameObject.Find("Inventory Bag").GetComponentInChildren<Animator>();
-                clicked = GameObject.Find("Inventory Bag").GetComponent<SetOnClickEvent>().clicked;
-                requested_inventory = GameObject.Find("Inventory Bag").GetComponent<SetOnClickEvent>().requested_inventory;
-          
+
             }
 
             inventory.SetActive(false);
         }
-        interactables = GameObject.FindGameObjectsWithTag("Interactable");
-        //get item pickup script 
-        for (int i = 0; i < interactables.Length; i++)
-        {
-            ItemPickup = interactables[i].GetComponent<ItemPickup>();
-        }
+        interactables = GameObject.FindGameObjectsWithTag("Interactable");    
+
     }
 
 
-    public void InventorySystem()
-    {
-        if (SceneManager.GetActiveScene().name != "IntroScene")
-        {
-            if (inventory != null)
-            {
+    public void EnterInventorySystem() {
+        inventory.SetActive(true);
+        //play anim 
+        StartCoroutine(OpenInventory());
+        //play sound 
+        StartCoroutine(PlayUI());
 
-                if (requested_inventory || clicked)
-                {
-                    //play anim 
-                    StartCoroutine(OpenInventory());
-                    //play sound 
-                    StartCoroutine(PlayUI());
+        print("Inventory Opened");
 
-                    print("Inventory Opened");
+    }
+    public void ExitInventorySystem() {
+        if (inventory.activeSelf == false) return;
+        //play sound 
+        StartCoroutine(PlayUI());
+        inventory.SetActive(false);
+    }
 
-                }
-                //if X is pressed close inventory
-                if (inventory.activeSelf == true)
-                {
-                    if (Input.GetKeyDown(KeyCode.X) || clicked)
-                    {
-                        //play sound 
-                        StartCoroutine(PlayUI());
-                        inventory.SetActive(false);
-                        //clicked = false 
-                        clicked = false;
-                        //set click to link with on Click Event
-                        GameObject.Find("Inventory Bag").GetComponent<SetOnClickEvent>().clicked = clicked;
-
-                    }
-                }
-
+    public void AddMP() { 
                 //if potion used add to player MP 
                 if (InventorySelect.addMP)
                 {
@@ -98,9 +76,8 @@ public class InventoryManager : MonoBehaviour
                     InventorySelect.addMP = false;
 
                 }
-            }
-        }
     }
+    
 
     IEnumerator OpenInventory()
     {

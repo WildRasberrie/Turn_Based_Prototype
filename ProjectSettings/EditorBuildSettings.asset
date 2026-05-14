@@ -6,17 +6,20 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Intro Scene/IntroScene.unity
+    guid: 408b37dc89bb1fe41870c8fd7a8b7f15
+  - enabled: 1
+    path: Assets/Scenes/CutScene/CutScene.unity
+    guid: c5ddf03f838f15941a8c20bba1ce5304
+  - enabled: 1
+    path: Assets/Scenes/Dialogue Scene/DialogueScene.unity
+    guid: 5217943db6315be459139e69eda9e9e3
+  - enabled: 1
     path: Assets/Scenes/Dungeon Scene/Dungeon_lvl1.unity
     guid: dbce3e3c859a7384e8a46ac695659c99
   - enabled: 1
     path: Assets/Scenes/Battle Scene/BattleScene.unity
     guid: 267dfcbd0eadefc49a459567bf58d601
-  - enabled: 1
-    path: Assets/Scenes/Intro Scene/IntroScene.unity
-    guid: 408b37dc89bb1fe41870c8fd7a8b7f15
-  - enabled: 1
-    path: Assets/Scenes/Dialogue Scene/DialogueScene.unity
-    guid: 5217943db6315be459139e69eda9e9e3
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: ecf42ce1949a3e649953a595953faf07,
       type: 2}

@@ -52,5 +52,10 @@ public enum Sfx
     Magic_attack = 10,
     Slap = 11,
     Lightning = 12,
-    Howl = 13
+    Howl = 13,
+    Ringing = 14,
+    Pickup = 15,
+    Player_Speak = 16,
+    Anon_Speak = 17,
+    Static = 18,
 }

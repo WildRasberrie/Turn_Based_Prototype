@@ -17,7 +17,6 @@ public class InventorySelect : MonoBehaviour
     public bool addMP;
 
     InventoryManager InventoryManager;
-    SceneLoader SceneLoader;
 
     bool yes, no;
     void Awake()
@@ -45,8 +44,7 @@ public class InventorySelect : MonoBehaviour
                 Button[i].onClick.AddListener(SelectPotion);
             }
         }
-        //grab Scene Loader 
-        SceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
+
        
     }
     void Update()

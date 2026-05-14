@@ -1,8 +1,5 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
-using UnityEngine.ProBuilder.MeshOperations;
-using UnityEngine.UI;
 
 public class ItemPickup : MonoBehaviour
 {
@@ -10,9 +7,8 @@ public class ItemPickup : MonoBehaviour
    public bool pickup;
    public GameObject inventory;
     InventoryManager InventoryManager;
-    public bool interacted, a_pressed;
+    public bool interacted;
 
-    public Button A_Button;
     Animator anim;
     public GameObject interact_text;
 
@@ -20,7 +16,6 @@ public class ItemPickup : MonoBehaviour
     {
         InventoryManager = GameObject.Find("Inventory").GetComponent<InventoryManager>();
         anim = GetComponent<Animator>();
-        A_Button = GameObject.FindWithTag("A Button").GetComponentInChildren<Button>();
     }
     void Start()
     {
@@ -28,10 +23,9 @@ public class ItemPickup : MonoBehaviour
         
     }
 
-    public void AButtonPressed() => a_pressed = true;
     void Update()
     {
-        interacted = distanceDetection && (Input.GetKeyDown(KeyCode.E) || a_pressed);
+        interacted = distanceDetection && (Input.GetKeyDown(KeyCode.E) );
 
 
         if (distanceDetection)
@@ -44,14 +38,19 @@ public class ItemPickup : MonoBehaviour
 
         if (interacted)
         {
-            //play open anim 
-            StartCoroutine(PlayChestOpenSound());
-            // Start add to inventory
-            //add item to inventory
-            pickup = true;
-            StartCoroutine(AddInventory());
+            OpenChest();  
+
         }
 
+    }
+
+    public void OpenChest() {
+        //play open anim 
+        StartCoroutine(PlayChestOpenSound());
+        // Start add to inventory
+        //add item to inventory
+        pickup = true;
+        StartCoroutine(AddInventory());
     }
 
     IEnumerator PlayChestOpenSound() {

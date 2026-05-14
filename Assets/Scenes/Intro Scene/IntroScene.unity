@@ -1002,7 +1002,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   anim: {fileID: 1355368258}
-  clouds: []
+  SetInactiveOnZoom:
+  - {fileID: 1307758491}
+  - {fileID: 370165188}
+  - {fileID: 1957134758}
+  - {fileID: 487743988}
+  buttons:
+  - {fileID: 314084980}
+  - {fileID: 1284347503}
 --- !u!114 &842855791
 MonoBehaviour:
   m_ObjectHideFlags: 0
