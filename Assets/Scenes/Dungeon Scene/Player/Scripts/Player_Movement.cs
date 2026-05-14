@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 public class Player_Movement : MonoBehaviour
 {
     PlayerInputActions input;
@@ -9,7 +10,7 @@ public class Player_Movement : MonoBehaviour
     Rigidbody rb;
     public Camera cam;
     public GameObject Waypoint;
-
+    public NavMeshAgent player;
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -40,52 +41,35 @@ public class Player_Movement : MonoBehaviour
         
         var clicked = Input.GetMouseButtonUp(0);
 
-        if (clicked && Vector3.Distance(transform.position, mousePos) > 0.01f)
+        if (clicked)
         {
-            mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 direction = (mousePos - transform.position).normalized;
-            Waypoint.SetActive(true);
-
-            if (rb.linearVelocity != Vector3.zero)
+            mousePos = cam.ScreenPointToRay(Input.mousePosition).origin;
+            
+            if (Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
             {
-                var current_target = new Vector3(mousePos.x, mousePos.y, Waypoint.transform.position.z);
+               player.SetDestination(hit.point);
 
-                Waypoint.transform.position = current_target;
+                Waypoint.transform.position = hit.point;
             }
-            //Arrow Key Movements
-            //if moving up on y, set animation to walking up 
-            if (direction.y > 0.8)
-            {
-                rb.linearVelocity = new Vector3(0, speed);
-            }
+            //walking anims
+    
             if (rb.linearVelocity.y > 0)
             {
                 //set animation to walk up
                 animator.Play("Forward_Walk");
             }
-            //if moving down on y, set animation to walking down
-            else if (direction.y < -0.8)
-            {
-                rb.linearVelocity = new Vector3(0, -speed);
-
-            }
+       
             if (rb.linearVelocity.y < 0) { 
                 animator.Play("Back_Walk");
             }
 
-            if (direction.x > 0.8)
-            {
-                rb.linearVelocity = new Vector3(speed, 0, 0);
-            }
+      
             if (rb.linearVelocity.x > 0)
             {
 
                 animator.Play("Right_Walk");
             }
-            else if (direction.x < -0.8)
-            {
-                rb.linearVelocity = new Vector3(-speed, 0, 0);
-            }
+          
             if (rb.linearVelocity.x < 0)
             {
                 animator.Play("Left_Walk");
