@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem;
 public class Player_Movement : MonoBehaviour
 {
     PlayerInputActions input;
@@ -11,6 +12,8 @@ public class Player_Movement : MonoBehaviour
     public Camera cam;
     public GameObject Waypoint;
     public NavMeshAgent player;
+    public Vector3 offset;
+    Vector3 direction;
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -33,44 +36,55 @@ public class Player_Movement : MonoBehaviour
 
         //print(move);
 
-        print (TrackAngle());
+        print (direction);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, transform.forward);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawRay(mousePos, transform.forward);
     }
 
     void PlayerController()
     {
         
-        var clicked = Input.GetMouseButtonUp(0);
+        var clicked = Mouse.current.leftButton.isPressed;
 
         if (clicked)
         {
-            mousePos = cam.ScreenPointToRay(Input.mousePosition).origin;
-            
-            if (Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
-            {
-               player.SetDestination(hit.point);
+            mousePos = //convert to world position
+                  cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
-                Waypoint.transform.position = hit.point;
+            if (Vector3.Distance(transform.position, mousePos) > 0.5f)
+            {
+                Waypoint.SetActive(true);
+                Waypoint.transform.position = mousePos;
+                 direction = (mousePos - transform.position).normalized;
+                rb.linearVelocity =new Vector3(direction.x, direction.y, 0)  * speed;
             }
             //walking anims
     
-            if (rb.linearVelocity.y > 0)
+            if (direction.y > 0)
             {
                 //set animation to walk up
                 animator.Play("Forward_Walk");
             }
        
-            if (rb.linearVelocity.y < 0) { 
+            if (direction.y < 0) { 
                 animator.Play("Back_Walk");
             }
 
       
-            if (rb.linearVelocity.x > 0)
+            if (direction.x > 0)
             {
 
                 animator.Play("Right_Walk");
             }
           
-            if (rb.linearVelocity.x < 0)
+            if (direction.x < 0)
             {
                 animator.Play("Left_Walk");
             }
@@ -88,7 +102,7 @@ public class Player_Movement : MonoBehaviour
     }
 
     Vector3 TrackAngle() {
-       return new Vector3( Vector3.Dot(transform.right, mousePos), Vector3.Dot(transform.up, mousePos)).normalized;
+       return new Vector3( Vector3.Dot(transform.position,transform.right), Vector3.Dot(transform.position, transform.forward)).normalized;
     }
 
 
