@@ -15,6 +15,7 @@ TagManager:
   - A Button
   - DPad
   - Clouds
+  - InventoryBag
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Water
   - UI
   - MiniMapPoint
-  - 
+  - Enemy Spawner
   - 
   - 
   - 

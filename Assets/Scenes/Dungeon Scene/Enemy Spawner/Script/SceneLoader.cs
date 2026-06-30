@@ -6,10 +6,14 @@ public class SceneLoader : MonoBehaviour
     [Header ("Player Stats")]
     public int playerHP = 100; // start player at 100 hp 
     public int playerMP = 50;
+    [Header ("Amount of Battles Won")]
+    public int battlesWon = 0; // start player at 0 battles won
 
+    public Vector3 storedPosition; // store player position for scene transitions
 
     void Update()
     {
+       
         ResetGame();
     }
 

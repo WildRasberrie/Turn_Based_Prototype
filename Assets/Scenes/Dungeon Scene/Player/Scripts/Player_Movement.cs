@@ -1,24 +1,23 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 public class Player_Movement : MonoBehaviour
 {
     PlayerInputActions input;
     Vector2 move;
     Vector3 mousePos;
     [SerializeField] float speed;
-    Animator animator;
+    public Animator animator;
     Rigidbody rb;
     public Camera cam;
-    public GameObject Waypoint;
-    public NavMeshAgent player;
+    //public GameObject Waypoint;
     public Vector3 offset;
     Vector3 direction;
     private void Awake()
     {
-        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
-        Waypoint.SetActive(false);
+       /// Waypoint.SetActive(false);
     }
 
     private void OnEnable()
@@ -26,17 +25,29 @@ public class Player_Movement : MonoBehaviour
         input = new PlayerInputActions();
         input.Enable();
     }
-    
+
+    private void OnDisable()
+    {
+        input.Disable();
+    }
+
 
     void FixedUpdate()
     {
+        var scene = SceneManager.GetActiveScene().name;
+
+        if (scene == "Dungeon_lvl1") this.gameObject.SetActive(true);
+        if (scene != "Dungeon_lvl1") this.gameObject.SetActive(false);
+
+
+
         PlayerController();
 
         //print(mousePos);
 
         //print(move);
 
-        print (direction);
+       // print (direction);
     }
 
     private void OnDrawGizmos()
@@ -60,13 +71,13 @@ public class Player_Movement : MonoBehaviour
 
             if (Vector3.Distance(transform.position, mousePos) > 0.5f)
             {
-                Waypoint.SetActive(true);
-                Waypoint.transform.position = mousePos;
-                 direction = (mousePos - transform.position).normalized;
-                rb.linearVelocity =new Vector3(direction.x, direction.y, 0)  * speed;
+                //Waypoint.SetActive(true);
+                //Waypoint.transform.position = mousePos;
+                direction = (mousePos - transform.position).normalized;
+                rb.linearVelocity = new Vector3(direction.x, direction.y, 0) * speed;
             }
             //walking anims
-    
+
             if (direction.y > 0)
             {
                 //set animation to walk up
@@ -93,12 +104,11 @@ public class Player_Movement : MonoBehaviour
         if (transform.position == mousePos)
         {
             rb.linearVelocity = Vector3.zero;
-            Waypoint.SetActive(false);
+            ///Waypoint.SetActive(false);
             animator.Play("Idle");
         }
-
-
-
+        
+        
     }
 
     Vector3 TrackAngle() {

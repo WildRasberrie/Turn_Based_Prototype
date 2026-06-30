@@ -6,6 +6,7 @@ public class DoNotDestroy : MonoBehaviour
     {
         //if theres a duplicate, remove until theres only one 
 
+    
         //set item to not destroy on load
         if (this != null)
         {

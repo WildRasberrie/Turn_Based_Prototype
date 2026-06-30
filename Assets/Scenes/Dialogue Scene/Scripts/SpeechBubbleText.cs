@@ -17,16 +17,16 @@ public class SpeechBubbleText : MonoBehaviour
     public GameObject phoneSprite;
     [Header("Player UI")]
     public GameObject playerSprite;
-
     public AudioController AudioController;
 
 
     private void Start()
     {
-        
             StartCoroutine(StartDialogue());
+
         if (SceneManager.GetActiveScene().name == "DialogueScene")
         {
+
             //Play ringing
             StartCoroutine(AudioController.PhoneRinging());
         }
@@ -47,6 +47,8 @@ public class SpeechBubbleText : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "DialogueScene")
         {
+            TextStyle();
+
             if (dialogueIndex >= dialogueText.Length && Input.GetMouseButtonUp(0))
             {
                 StartCoroutine(LoadCutScene());
@@ -63,7 +65,6 @@ public class SpeechBubbleText : MonoBehaviour
 
         
 
-            TextStyle();
         
     }
 
@@ -99,18 +100,20 @@ public class SpeechBubbleText : MonoBehaviour
     }
 
     public void DialogueAudio() {
-        if (SceneManager.GetActiveScene().name != "DialogueScene") return;
-        if (dialogueIndex % 2 == 0 && dialogueIndex < 7)
+        if (SceneManager.GetActiveScene().name == "DialogueScene")
         {
-            StartCoroutine(AudioController.AnonSpeak());
-        }
-        else
-        {
-            StartCoroutine(AudioController.PlayerSpeak());
-        }
-        if (dialogueIndex == 7)
-        {
-            StartCoroutine(AudioController.PhoneHangup());
+            if (dialogueIndex % 2 == 0 && dialogueIndex < 7)
+            {
+                StartCoroutine(AudioController.AnonSpeak());
+            }
+            else
+            {
+                StartCoroutine(AudioController.PlayerSpeak());
+            }
+            if (dialogueIndex == 7)
+            {
+                StartCoroutine(AudioController.PhoneHangup());
+            }
         }
     }
 

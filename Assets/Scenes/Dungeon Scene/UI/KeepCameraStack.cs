@@ -6,23 +6,22 @@ public class KeepCameraStack : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     public Camera baseCamera;
-    public Camera overlayCamera;
+    public Camera[] overlayCamera;
     Scene scene;
     void Awake()
     {
         baseCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
 
-        if (scene.name != "BattleScene") {
-            overlayCamera = GameObject.Find("MiniMap").GetComponent<Camera>();
+        if (scene.name == "DungeonScene") {
 
             var baseData = baseCamera.GetUniversalAdditionalCameraData();
-
-            //if overlay cameras are null, assign minimap camera as an overlay
-            if (!baseData.cameraStack.Contains(overlayCamera))
+            for (int i = 0; i < overlayCamera.Length; i++)
             {
-                baseData.cameraStack.Add(overlayCamera);
-
+                if (overlayCamera[i] != null) baseData.cameraStack.Add(overlayCamera[i]);
+                if (overlayCamera[1] ==null) overlayCamera[1] = GameObject.Find("Player Camera").GetComponent<Camera>();
             }
+
+
         }
 
     }

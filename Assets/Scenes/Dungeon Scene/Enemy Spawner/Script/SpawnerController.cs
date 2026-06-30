@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class SpawnerController : MonoBehaviour
 {
@@ -22,60 +24,71 @@ public class SpawnerController : MonoBehaviour
  
     void Start()
     {
-        SceneLoader = GameObject.FindWithTag("SceneLoader").GetComponent<SceneLoader>();
-        player_transform = player.transform;
-        player.transform.position = player_transform.position;
-        //check if there is more than one player in the scene, if there is more than one player
-        // destroy the extra player 
-        player = GameObject.FindGameObjectWithTag("Player");
-        var current_players = GameObject.FindGameObjectsWithTag("Player");
-        if (current_players.Length > 1)
-        {
-            for (int i = 1; i < current_players.Length; i++)
-            {
-                Destroy(current_players[i]);
-            }
-        }
-     
+        if (player == null) player = GameObject.FindGameObjectWithTag("Player");
+
+        if (SceneLoader == null) SceneLoader = GameObject.FindWithTag("SceneLoader").GetComponent<SceneLoader>();
+        //player_transform = player.transform;
+        if (SceneLoader.battlesWon != 0) player.transform.position = SceneLoader.storedPosition;
+ 
     }
 
     void Update()
     {
-        
-        for (int i = 0; i < enemy_loc.Length; i++) { 
-            if (DistanceDetection(player.transform.position, i, 2)) {
+        TempSpawnEnemyTrigger();
 
-            spawn = true;
-            StartCoroutine(SpawnEnemy());
-            }
+        //if battle won, enemy_loc.length will increase by 1
+        if (SceneLoader.battlesWon > 0 && SceneLoader.battlesWon < 3)
+        {
+            enemy_loc[SceneLoader.battlesWon - 1].SetActive(false);
+
         }
 
-        //print("Chance of enemy encounter is " + spawn_ratio + "%"
-        //    +"\n spawn chance: " + spawn);
+        print("Chance of enemy encounter is " + spawn_ratio + "%"
+          +"\n spawn chance: " + spawn);
+    }
+
+    public void TempSpawnEnemyTrigger() {
+ 
+        for (int i = 0; i < enemy_loc.Length; i++)
+        {
+            if (DistanceDetection(player.transform.position, i, 2))
+            {
+                print("ratio " + ratio);
+                ratio = Random.Range(0, 100);
+
+                var max_ratio = (spawn_ratio) / 100;
+
+                random = ratio / 100; //get the ratio of player encountering the enemy
+                if (random == max_ratio && max_ratio != 0)
+                {
+                    spawn = true;
+                }
+                else
+                {
+                    spawn = false;
+                }
+            }
+
+            if (spawn)
+            {
+                SceneLoader.storedPosition = player.transform.position; //store player positiion in  dungeon scene 
+                StartCoroutine(SpawnEnemy());
+            }
+
+
+        }
     }
 
     IEnumerator SpawnEnemy() {
         // have random number spawn once when called 
 
-        ratio = Random.Range(0,100);
-
-        var max_ratio = (spawn_ratio)/ 100;
-
-        random = ratio/100; //get the ratio of player encountering the enemy
-        if (random == max_ratio && max_ratio != 0)
-        {
-            spawn = true;
-        }
-        else
-        {
-            spawn = false;
-        }
+ 
 
         if (spawn)
         {
             //p]ay fade out animation 
             yield return new WaitForSeconds(1f);
-            SceneLoader.LoadScene("BattleScene");
+            SceneManager.LoadScene("BattleScene");
             spawn = false;
         }
     }
